@@ -3,11 +3,10 @@
 # Dictionary for h4 = [7, 3]???
 # Set up the Dictionary with a nested for loop assigning letters from a string to values
 lateral = "ABCDEFGH"
-
+pieces = ["p", "kn", "b", "r", "q", "k"]
 
 def boardSetUp():
     board = {}
-    pieces = ["p", "kn", "b", "r", "q", "k"]
     
     for letter in lateral:
         for number in range(8):
@@ -31,16 +30,18 @@ def boardSetUp():
     board[f"D8"] = [pieces[4], "black"]
     board[f"E8"] = [pieces[5], "black"]
 
-    for i in reversed(range(8)):
-        for j in lateral:
-            square = board[f"{j}{i+1}"]
-            if len(square) == 0:
-                print("{:>4}".format(f"{square}"), end="")
-            else:
-                print("{:>4}".format(f"{square[0]}"), end="")
-        print(end="\n\n")
+    # for i in reversed(range(8)):
+    #     for j in lateral:
+    #         square = board[f"{j}{i+1}"]
+    #         if len(square) == 0:
+    #             print("{:>4}".format(f"{square}"), end="")
+    #         else:
+    #             print("{:>4}".format(f"{square[0]}"), end="")
+    #     print(end="\n\n")
 
     return board
+
+# def pawnMovement(startPoint, endPoint):
 
 
 def userMove(board, color):
@@ -50,20 +51,14 @@ def userMove(board, color):
     # I.E. A valid move position.
 
     format_error = "Incorrect Format"
+    new_positions = []
     while (True):
         input_positions = input("Example: H4, A4\n").strip().split(", ")
-        new_positions = []
         for position in input_positions:
             try:
                 if len(position) != 2:
                     print(format_error)
                     break
-                # elif position[0] not in lateral:
-                #     print(format_error)
-                #     break
-                # elif int(position[1]) not in range(1, 9):
-                #         print(format_error)
-                #         break
                 elif position in board:
                     new_positions.append(position)
                 else:
@@ -85,7 +80,25 @@ def userMove(board, color):
         
         print(f"Moving from {input_positions[0]} to {input_positions[1]}")
         break
-                
+    
+    piece = board[f"{new_positions[0]}"][0]
+    if piece == pieces[0]:
+        print("Selected square is a Pawn")
+        pawnMovement(new_positions[0], new_positions[1])
+    elif piece == pieces[1]:
+        print("Selected square is a Knight")
+    elif piece == pieces[2]:
+        print("Selected square is a Bishop")
+    elif piece == pieces[3]:
+        print("Selected square is a Rook")
+    elif piece == pieces[4]:
+        print("Selected square is a Queen")
+    elif piece == pieces[5]:
+        print("Selected square is a King")
+    else:
+        print("Somehow the selected piece is.... Not a piece? Weird, huh")
+
+
 while (True):
     board = boardSetUp()
 
