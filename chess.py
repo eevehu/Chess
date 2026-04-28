@@ -7,7 +7,7 @@
 
 def boardSetUp():
     board = {}
-    pieces = ["p ", "kn", "b", "r", "q", "k"]
+    pieces = ["p", "kn", "b", "r", "q", "k"]
 
     lateral = "ABCDEFGH"
     for letter in lateral:
@@ -17,25 +17,33 @@ def boardSetUp():
     for i in [(2, "white"), (7, "black")]:
         for letter in lateral:
             board[f"{letter}{i[0]}"] = [pieces[0], i[1]]
-            print(board[f"{letter}{i[0]}"])
+            # print(board[f"{letter}{i[0]}"])
 
     for side in [[8, "white"], [1, "black"]]:
         for first in [[lateral[0], lateral[7], pieces[3]], 
                     [lateral[1], lateral[6], pieces[1]], 
                     [lateral[2], lateral[5], pieces[2]]]:
-            print(f"Position: {side[0]}\nColor: {side[1]}\nAt Positions: {first[0]}, {first[1]}\nPiece: {first[2]}")
+            # print(f"Position: {side[0]}\nColor: {side[1]}\nAt Positions: {first[0]}, {first[1]}\nPiece: {first[2]}")
+            board[f"{first[0]}{side[0]}"] = [first[2], side[1]]
+            board[f"{first[1]}{side[0]}"] = [first[2], side[1]]
             
+    board[f"D1"] = [pieces[4], "white"]
+    board[f"E1"] = [pieces[5], "white"]
+    board[f"D8"] = [pieces[4], "black"]
+    board[f"E8"] = [pieces[5], "black"]
+
+    for i in reversed(range(8)):
+        for j in lateral:
+            square = board[f"{j}{i+1}"]
+            if len(square) == 0:
+                print("{:>4}".format(f"{square}"), end="")
+            else:
+                print("{:>4}".format(f"{square[0]}"), end="")
+        print(end="\n\n")
+
     return board
 
 
 lateral = "ABCDEFGH"
 board = boardSetUp()
 
-for i in reversed(range(8)):
-    for j in lateral:
-        square = board[f"{j}{i+1}"]
-        if len(square) == 0:
-            print("{:>4}".format(f"{square}"), end="")
-        else:
-            print("{:>4}".format(f"{square[0]}"), end="")
-    print(end="\n\n")
