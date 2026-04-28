@@ -2,14 +2,13 @@
 
 # Dictionary for h4 = [7, 3]???
 # Set up the Dictionary with a nested for loop assigning letters from a string to values
-
+lateral = "ABCDEFGH"
 
 
 def boardSetUp():
     board = {}
     pieces = ["p", "kn", "b", "r", "q", "k"]
-
-    lateral = "ABCDEFGH"
+    
     for letter in lateral:
         for number in range(8):
             board[f"{letter}{number+1}"] = []
@@ -44,6 +43,42 @@ def boardSetUp():
     return board
 
 
-lateral = "ABCDEFGH"
+def userMove(board, color):
+    # I need to figure out which notation to use to move a piece. I think a coord H4, A4?, 
+    # Based on that I can figure out the piece & and if its color matchs the person moving
+    # And then if the position they're moving to is a valid one for that piece/isn't filled
+    # I.E. A valid move position.
+
+    format_error = "Incorrect Format"
+    while (True):
+        input_positions = input("Example: H4, A4\n").strip().split(", ")
+        new_positions = []
+        for position in input_positions:
+            try:
+                if len(position) != 2:
+                    print(format_error)
+                    break
+                # elif position[0] not in lateral:
+                #     print(format_error)
+                #     break
+                # elif int(position[1]) not in range(1, 9):
+                #         print(format_error)
+                #         break
+                elif position in board:
+                    new_positions.append(position)
+                else:
+                    print(format_error)
+                    break
+                
+            except:
+                print(format_error)
+                continue
+        if len(new_positions) != 2:
+            continue
+        
+        print(f"Moving from {input_positions[0]} to {input_positions[1]}")
+                
+
 board = boardSetUp()
 
+userMove(board, "white")
