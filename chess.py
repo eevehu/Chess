@@ -18,7 +18,7 @@ def boardSetUp():
             board[f"{letter}{i[0]}"] = [pieces[0], i[1]]
             # print(board[f"{letter}{i[0]}"])
 
-    for side in [[8, "white"], [1, "black"]]:
+    for side in [[1, "white"], [8, "black"]]:
         for first in [[lateral[0], lateral[7], pieces[3]], 
                     [lateral[1], lateral[6], pieces[1]], 
                     [lateral[2], lateral[5], pieces[2]]]:
@@ -75,10 +75,18 @@ def userMove(board, color):
                 continue
         if len(new_positions) != 2:
             continue
+        elif board[f"{new_positions[0]}"] == [] or None:
+            print("Square selected to move is empty")
+            continue
+        elif len(board[f"{new_positions[1]}"]) == 2:
+            if board[f"{new_positions[1]}"][1] == color:
+                print("Unable to move piece onto your own piece")
+                continue
         
         print(f"Moving from {input_positions[0]} to {input_positions[1]}")
+        break
                 
+while (True):
+    board = boardSetUp()
 
-board = boardSetUp()
-
-userMove(board, "white")
+    userMove(board, "white")
