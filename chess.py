@@ -56,6 +56,7 @@ def boardUpdate(movedPiece):
             else:
                 print("{:>4}".format(f"{square[0]}"), end="")
         print(end="\n\n")
+    return
     # Change the dictionary of pieces
     # Then, reload the actual board
 
@@ -63,25 +64,30 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     # Work on en-passant later
     piece = board[f"{startPoint}"]
     color = piece[1]
+
+    print(f"|{color}|")
+
     index = lateral.find(startPoint[0]) # Will get the position of the horizontal
     enemyIndex = lateral.find(endPoint[0])
 
-    lateralDistance = int(endPoint[1]) - int(startPoint[1])
-    if lateralDistance > 2:
+    verticalDistance = int(endPoint[1]) - int(startPoint[1])
+    if verticalDistance > 2:
         return False
 
     if attacking:
-        if (lateralDistance != 1 or index == enemyIndex):
+        enemyPiece = board[f"{endPoint}"][0]
+        if (verticalDistance != 1 or index == enemyIndex) or (abs(index - enemyIndex) != 1):
             return False
-        
+        boardUpdate([startPoint, endPoint])
+        print(f"You Took A {enemyPiece.upper()}")
         # Implement actually taking a piece and updating the board
     else:
-        if lateralDistance == 2:
-            if piece[0] == 2 and color == "white":
+        if verticalDistance == 2:
+            if startPoint[1] == "2" and color == "white" or startPoint[1] == "7" and color == "black":
                 boardUpdate([startPoint, endPoint])
-            elif piece[0] == 7 and color == "black":
-                boardUpdate([startPoint, endPoint])
+                print(f"You took: {enemyPiece}")
             else:
+                print("Failed here")
                 return False
         else:
             boardUpdate([startPoint, endPoint])
@@ -98,7 +104,7 @@ def userMove(board, color):
     new_positions = []
     while (True):
         taking = False
-        input_positions = input("Example: H4, A4\n").strip().split(", ")
+        input_positions = input().strip().split(", ")
         for position in input_positions:
             try:
                 if len(position) != 2:
@@ -113,23 +119,23 @@ def userMove(board, color):
             except:
                 print(format_error)
                 continue
-        if len(new_positions) != 2:
-            continue
-        elif board[f"{new_positions[0]}"] == [] or None:
-            print("Square selected to move is empty")
+        if len(new_positions) != 2 or board[f"{new_positions[0]}"] == [] or None:
             continue
         elif len(board[f"{new_positions[1]}"]) == 2:
             taking = True
             if board[f"{new_positions[1]}"][1] == color:
                 print("Unable to move piece onto your own piece")
                 continue
+            
         
-        print(f"Moving from {input_positions[0]} to {input_positions[1]}")
+        # print(f"Moving from {input_positions[0]} to {input_positions[1]}")
 
+        if board[f"{new_positions[0]}"][1] != color:
+            print("That is not your piece")
+            continue
     
         piece = board[f"{new_positions[0]}"][0]
         if piece == pieces[0]:
-            print("Selected square is a Pawn")
             if pawnMovement(new_positions[0], new_positions[1], board, taking) == False:
                 print("Pawn is unable to move to that position")
                 continue
@@ -150,5 +156,11 @@ def userMove(board, color):
 
 
 board = boardSetUp()
+players = ["white", "black"]
+
+print("Move with the notation: (Piece's Square), (Square Your Piece Will Move To) I.E -- D2, D4")
+
 while (True):
-    userMove(board, "white")
+    for i in range(0, 2):
+        print(f"Player: {players[i]}")
+        userMove(board, players[i])
