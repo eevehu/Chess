@@ -43,19 +43,48 @@ def boardSetUp():
 
     return board
 
+def boardUpdate(movedPiece):
+    board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
+    board[f"{movedPiece[0]}"] = []
+    print("Updated Board!!")
+
+    for i in reversed(range(8)):
+        for j in lateral:
+            square = board[f"{j}{i+1}"]
+            if len(square) == 0:
+                print("{:>4}".format(f"{square}"), end="")
+            else:
+                print("{:>4}".format(f"{square[0]}"), end="")
+        print(end="\n\n")
+    # Change the dictionary of pieces
+    # Then, reload the actual board
+
 def pawnMovement(startPoint, endPoint, board, attacking):
     # Work on en-passant later
-
-    piece = board[f"{endPoint}"]
+    piece = board[f"{startPoint}"]
+    color = piece[1]
     index = lateral.find(startPoint[0]) # Will get the position of the horizontal
-    enemy_index = lateral.find(endPoint[0])
-    if attacking:
-        if (int(endPoint[1]) - int(startPoint[1]) != 1 
-            or index == enemy_index):
+    enemyIndex = lateral.find(endPoint[0])
 
-            print("Error, unable to attack that piece")
+    lateralDistance = int(endPoint[1]) - int(startPoint[1])
+    if lateralDistance > 2:
+        return False
+
+    if attacking:
+        if (lateralDistance != 1 or index == enemyIndex):
             return False
+        
         # Implement actually taking a piece and updating the board
+    else:
+        if lateralDistance == 2:
+            if piece[0] == 2 and color == "white":
+                boardUpdate([startPoint, endPoint])
+            elif piece[0] == 7 and color == "black":
+                boardUpdate([startPoint, endPoint])
+            else:
+                return False
+        else:
+            boardUpdate([startPoint, endPoint])
 
 
 
@@ -120,7 +149,6 @@ def userMove(board, color):
             print("Somehow the selected piece is.... Not a piece? Weird, huh")
 
 
+board = boardSetUp()
 while (True):
-    board = boardSetUp()
-
     userMove(board, "white")
