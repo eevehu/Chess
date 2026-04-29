@@ -101,9 +101,9 @@ def userMove(board, color):
     # I.E. A valid move position.
 
     format_error = "Incorrect Format"
-    new_positions = []
     while (True):
         taking = False
+        new_positions = []
         input_positions = input().strip().split(", ")
         for position in input_positions:
             try:
