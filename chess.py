@@ -30,14 +30,16 @@ def boardSetUp():
     board[f"D8"] = [pieces[4], "black"]
     board[f"E8"] = [pieces[5], "black"]
 
-    # for i in reversed(range(8)):
-    #     for j in lateral:
-    #         square = board[f"{j}{i+1}"]
-    #         if len(square) == 0:
-    #             print("{:>4}".format(f"{square}"), end="")
-    #         else:
-    #             print("{:>4}".format(f"{square[0]}"), end="")
-    #     print(end="\n\n")
+    board[f"B3"] = ["p", "black"] # for cheking pawn attacking
+
+    for i in reversed(range(8)):
+        for j in lateral:
+            square = board[f"{j}{i+1}"]
+            if len(square) == 0:
+                print("{:>4}".format(f"{square}"), end="")
+            else:
+                print("{:>4}".format(f"{square[0]}"), end="")
+        print(end="\n\n")
 
     return board
 
@@ -45,14 +47,16 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     # Work on en-passant later
 
     piece = board[f"{endPoint}"]
+    index = lateral.find(startPoint[0]) # Will get the position of the horizontal
+    enemy_index = lateral.find(endPoint[0])
     if attacking:
-        if int(endPoint[1]) - int(startPoint[1])!= 1:
+        if (int(endPoint[1]) - int(startPoint[1]) != 1 
+            or index == enemy_index):
+
+            print("Error, unable to attack that piece")
             return False
-        index = lateral.find(startPoint[0])
-        print(index)
-        # Implement checking for that the attacks are in range!!! 
-        # Also, probably move this code to a different function that each of the pieces make use of
-        # It increases coupling... Maybe don't idk
+        # Implement actually taking a piece and updating the board
+
 
 
 def userMove(board, color):
@@ -60,7 +64,6 @@ def userMove(board, color):
     # Based on that I can figure out the piece & and if its color matchs the person moving
     # And then if the position they're moving to is a valid one for that piece/isn't filled
     # I.E. A valid move position.
-    board[f"B3"] = ["p", "black"] # for cheking pawn attacking
 
     format_error = "Incorrect Format"
     new_positions = []
