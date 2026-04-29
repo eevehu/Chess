@@ -30,25 +30,11 @@ def boardSetUp():
     board[f"D8"] = [pieces[4], "black"]
     board[f"E8"] = [pieces[5], "black"]
 
-    board[f"B3"] = ["p", "black"] # for cheking pawn attacking
+    board["B3"] = ["p", "black"] # for cheking pawn attacking
+    board["A7"] = ["p", "white"] # for cheking pawn attacking
 
     for i in reversed(range(8)):
-        for j in lateral:
-            square = board[f"{j}{i+1}"]
-            if len(square) == 0:
-                print("{:>4}".format(f"{square}"), end="")
-            else:
-                print("{:>4}".format(f"{square[0]}"), end="")
-        print(end="\n\n")
-
-    return board
-
-def boardUpdate(movedPiece):
-    board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
-    board[f"{movedPiece[0]}"] = []
-    print("Updated Board!!")
-
-    for i in reversed(range(8)):
+        print("{:>2}".format(f"{i+1}|"), end="")
         for j in lateral:
             square = board[f"{j}{i+1}"]
             if len(square) == 0:
@@ -58,7 +44,48 @@ def boardUpdate(movedPiece):
                     print("{:>4}".format(f"{square[0].upper()}"), end="")
                 else:
                     print("{:>4}".format(f"{square[0]}"), end="")
-        print(end="\n\n")
+        if i != 0:
+            print(end="\n\n")
+        else: 
+            print(end="\n")
+
+    print("{:>2}".format(""), end="")
+    print("{:>4}".format("_") * 8)
+    print("{:>2}".format(""), end="")
+    
+    for i in range(8):
+        print("{:>4}".format(lateral[i]), end="")
+    print(end="\n\n")
+    return board
+
+def boardUpdate(movedPiece):
+    board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
+    board[f"{movedPiece[0]}"] = []
+    print("Updated Board!!")
+
+    for i in reversed(range(8)):
+        print("{:>2}".format(f"{i+1}|"), end="")
+        for j in lateral:
+            square = board[f"{j}{i+1}"]
+            if len(square) == 0:
+                print("{:>4}".format(f"{square}"), end="")
+            else:
+                if square[1] == "white":
+                    print("{:>4}".format(f"{square[0].upper()}"), end="")
+                else:
+                    print("{:>4}".format(f"{square[0]}"), end="")
+        if i != 0:
+            print(end="\n\n")
+        else: 
+            print(end="\n")
+
+    print("{:>2}".format(""), end="")
+    print("{:>4}".format("_") * 8)
+    print("{:>2}".format(""), end="")
+    
+    for i in range(8):
+        print("{:>4}".format(lateral[i]), end="")
+    print(end="\n\n")
     return
     # Change the dictionary of pieces
     # Then, reload the actual board
@@ -67,7 +94,7 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     # Work on en-passant later
     piece = board[f"{startPoint}"]
     color = piece[1]
-
+    upgrading = False
     print(f"|{color}|")
 
     index = lateral.find(startPoint[0]) # Will get the position of the horizontal
@@ -80,10 +107,27 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     if verticalDistance > 2 or verticalDistance < 1:
         return False
     
+    print(f"End point is {endPoint[1]}")
+    if endPoint[1] == "8" or endPoint[1] == "1":
+        while (True):
+            upgrade = input("Choose a piece to upgrade to: ki, b, r, or q\n").strip().lower()
+            if upgrade in pieces:
+                upgrading = True
+                break
+            else:
+                upgrading = False
+                print("Invalid Upgrade")
+                continue
+    else:
+        print(f"Endpoint == 1: {endPoint[1] == 1}\nEndpoint == 8: {endPoint[1] == 8}")
+        upgrading = False
+        
     if attacking:
         enemyPiece = board[f"{endPoint}"][0]
         if (verticalDistance != 1 or index == enemyIndex) or (abs(index - enemyIndex) != 1):
             return False
+        if upgrading:
+            board[f"{startPoint}"] = [upgrade, color]
         boardUpdate([startPoint, endPoint])
         print(f"You Took A {enemyPiece.upper()}")
         # Implement actually taking a piece and updating the board
@@ -92,6 +136,8 @@ def pawnMovement(startPoint, endPoint, board, attacking):
             return False
         if verticalDistance == 2:
             if (startPoint[1] == "2") and (color == "white") or (startPoint[1] == "7") and (color == "black"):
+                if upgrading:
+                    board[f"{startPoint}"] = [upgrade, color]
                 boardUpdate([startPoint, endPoint])
             else:
                 print("Failed here")
