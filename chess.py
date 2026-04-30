@@ -243,8 +243,29 @@ def diagonalMovement(startPoint, endPoint, board):
 def bishopMovement(startPoint, endPoint, board):
     return diagonalMovement(startPoint, endPoint, board)
 
+def horizontalMovement(startPoint, endPoint, board):
+    startChar = startPoint[0]
+    endChar = endPoint[0]
+    startInt = int(startPoint[1])
+    endInt = int(endPoint[1])
+    differenceInt = endInt - startInt
+    
+    possibleMoves = []
+    counter = 0
+    if startChar == endChar:
+        for i in range(1, abs(differenceInt)+1):
+            if differenceInt < 0:
+                counter -= 1
+            else:
+                counter += 1
+            if (counter < 1) or (counter > 8): # This is redundant
+                print("IT@S BROKENNN")
+                break
+            square = board[f"{startChar}{startInt+counter}"]
+    
+
 def rookMovement(startPoint, endPoint, board):
-    print("This is the rook movement")
+    return horizontalMovement(startPoint, endPoint, board)
 
 def userMove(board, color):
     # I need to figure out which notation to use to move a piece. I think a coord H4, A4?, 
