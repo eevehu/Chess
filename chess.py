@@ -243,22 +243,9 @@ def bishopMovement(startPoint, endPoint, board):
     else:
         return False
         # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):
-            
-            
-            
 
-def movement(startPoint, endPoint, board):
-    piece = board[f"{startPoint}"]
-    color = piece[1]
-
-    index = lateral.find(startPoint[0]) # Will get the position of the horizontal
-    enemyIndex = lateral.find(endPoint[0])
-
-    if color == "white":
-        verticalDistance = int(endPoint[1]) - int(startPoint[1])
-    else:
-        verticalDistance = int(startPoint[1]) - int(endPoint[1])
-    
+def rookMovement(startPoint, endPoint, board):
+    print("This is the rook movement")
 
 def userMove(board, color):
     # I need to figure out which notation to use to move a piece. I think a coord H4, A4?, 
@@ -322,7 +309,9 @@ def userMove(board, color):
             else:
                 return
         elif piece == pieces[3]:
-            print("Selected square is a Rook")
+            if rookMovement(new_positions[0], new_positions[1], board) == False:
+                print("Rook is unable to move to that position")    
+                continue        
         elif piece == pieces[4]:
             print("Selected square is a Queen")
         elif piece == pieces[5]:
