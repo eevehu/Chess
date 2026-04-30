@@ -135,8 +135,10 @@ def pawnMovement(startPoint, endPoint, board, attacking):
             return False
         if verticalDistance == 2:
             if (startPoint[1] == "2") and (color == "white") or (startPoint[1] == "7") and (color == "black"):
-                if len(board[f"{startPoint[0]}{startPoint[1]+1}"]) == 2:
-                    print("Cannot jump past piece")
+                if (len(board[f"{startPoint[0]}{int(startPoint[1])+1}"]) == 2 and color == "white"
+                    ) or (len(board[f"{startPoint[0]}{int(startPoint[1])-1}"]) == 2 and color == "black"):
+                    
+                    print(f"Cannot jump past piece: {board[f"{startPoint[0]}{int(startPoint[1])+1}"]}")
                     return False
                 if upgrading:
                     board[f"{startPoint}"] = [upgrade, color]
@@ -196,24 +198,50 @@ def bishopMovement(startPoint, endPoint, board):
     
     # Create a for loop with the distances from out start to our end
     startingLateral = lateral.index(startPoint[0])
-    isUp = startingLateral < lateral.index(endPoint[0])
+    isRight = startingLateral < lateral.index(endPoint[0])
+    length = int(endPoint[1]) - int(startPoint[1])
+    if length == 0:
+        print("Must move vertically")
+        return False
     
-    for i in range(int(startPoint[1]), int(endPoint[1])):
+    incremental = 0
+    for i in range(1, abs(length)+1):
         # would be by saying plus or minus from the start point each time throug the loop
-        square = board[f"{lateral[startingLateral]}{i}"] 
+        if length < 0:
+            incremental -= 1
+        else:
+            incremental += 1
+        if (int(startPoint[1]) + incremental > 8) or (int(startPoint[1]) + incremental < 1):
+            break
+        
+        if isRight:
+            if startingLateral >= 7:
+                break
+            startingLateral += 1
+        else:
+            if startingLateral <= 0:
+                break
+            startingLateral -= 1
+        print(f"Making new square as position {lateral[startingLateral].upper()}{int(startPoint[1])+incremental}")
+        square = board[f"{lateral[startingLateral]}{int(startPoint[1])+incremental}"]
         print(f"Checking out {square}")
         if len(square) == 2:
             if square[1] == color:
                 print("Cannot move through your own piece")
-                return False
+                break
             else:
-                possibleMoves.append(square[0])
-                
-        if isUp:
-            possibleMoves.append(f"{lateral[startingLateral]}{i}")
-            startingLateral += 1
-        else:
-            
+                possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
+                break
+        possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
+    print(f"The possible moves for the current bishop are {possibleMoves}")
+    
+    for move in possibleMoves:
+        print(move)
+    if endPoint in possibleMoves:
+        boardUpdate([startPoint, endPoint])
+        return
+    else:
+        return False
         # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):
             
             
@@ -282,14 +310,17 @@ def userMove(board, color):
             else:
                 return
         elif piece == pieces[1]:
-            print("Selected square is a Knight")
             if knightMovement(new_positions[0], new_positions[1], board) == False:
                 print("Knight is unable to move to that position")
                 continue
             else:
                 return
         elif piece == pieces[2]:
-            print("Selected square is a Bishop")
+            if bishopMovement(new_positions[0], new_positions[1], board) == False:
+                print("Bishop is unable to move to that position")
+                continue
+            else:
+                return
         elif piece == pieces[3]:
             print("Selected square is a Rook")
         elif piece == pieces[4]:
