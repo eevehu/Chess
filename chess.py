@@ -1,3 +1,4 @@
+import sys
 # Would it be better to store the different colored squares as two different arrays/lists?
 
 # Dictionary for h4 = [7, 3]???
@@ -59,8 +60,13 @@ def boardSetUp():
     return board
 
 def boardUpdate(movedPiece):
+    hasWon = None
     if len(board[f"{movedPiece[1]}"]) == 2:
         print(f"You Took A {board[f"{movedPiece[0]}"][1].upper()}")
+        if board[f"{movedPiece[1]}"][0] == pieces[5]:
+            print("Check Mate!")
+            hasWon = board[f"{movedPiece[0]}"][1]
+            
     board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
     board[f"{movedPiece[0]}"] = []
     print("Updated Board!!")
@@ -88,9 +94,12 @@ def boardUpdate(movedPiece):
     for i in range(8):
         print("{:>4}".format(lateral[i]), end="")
     print(end="\n\n")
+    
+    if hasWon != None:
+        print(f"Well done {hasWon}!")
+        sys.exit()
+        
     return
-    # Change the dictionary of pieces
-    # Then, reload the actual board
 
 def pawnMovement(startPoint, endPoint, board, attacking):
     # Work on en-passant later
