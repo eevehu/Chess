@@ -16,7 +16,7 @@ def boardSetUp():
     
     for letter in lateral:
         for number in range(8):
-            board[f"{letter}{number+1}"] = []
+            board[f"{letter}{number+1}"] = ["\u25A1"]
 
     for i in [(2, "white"), (7, "black")]:
         for letter in lateral:
@@ -43,8 +43,8 @@ def boardSetUp():
         print("{:>2}".format(f"{i+1}|"), end="")
         for j in lateral:
             square = board[f"{j}{i+1}"]
-            if len(square) == 0:
-                print("{:>4}".format(f"{square}"), end="")
+            if len(square) < 2:
+                print("{:>4}".format(f"{square[0]}"), end="")
             else:
                 if square[1] == "white":
                     print("{:>4}".format(f"{square[0]}"), end="")
@@ -74,15 +74,15 @@ def boardUpdate(movedPiece):
             hasWon = board[f"{movedPiece[0]}"][1]
             
     board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
-    board[f"{movedPiece[0]}"] = []
+    board[f"{movedPiece[0]}"] = ["\u25A1"]
     print("Updated Board!!")
 
     for i in reversed(range(8)):
         print("{:>2}".format(f"{i+1}|"), end="")
         for j in lateral:
             square = board[f"{j}{i+1}"]
-            if len(square) == 0:
-                print("{:>4}".format(f"{square}"), end="")
+            if len(square) < 2:
+                print("{:>4}".format(f"{square[0]}"), end="")
             else:
                 if square[1] == "white":
                     print("{:>4}".format(f"{square[0]}"), end="")
