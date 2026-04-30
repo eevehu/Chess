@@ -233,21 +233,30 @@ def diagonalMovement(startPoint, endPoint, board):
                 possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
                 break
         possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
+    return possibleMoves
+        # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):    
+                     
+def bishopMovement(startPoint, endPoint, board):
+    possibleMoves = diagonalMovement(startPoint, endPoint, board)
+    if possibleMoves == False:
+        return False
     if endPoint in possibleMoves:
         boardUpdate([startPoint, endPoint])
         return
     else:
         return False
-        # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):    
-                     
-def bishopMovement(startPoint, endPoint, board):
-    return diagonalMovement(startPoint, endPoint, board)
 
 def horizontalMovement(startPoint, endPoint, board):
+    color = board[f"{startPoint}"][1]
+    
     startChar = startPoint[0]
+    startIndex = lateral.index(startChar)
     endChar = endPoint[0]
+    endIndex = lateral.index(endChar)
     startInt = int(startPoint[1])
     endInt = int(endPoint[1])
+    
+    differenceChar = endIndex - startIndex
     differenceInt = endInt - startInt
     
     possibleMoves = []
@@ -258,14 +267,54 @@ def horizontalMovement(startPoint, endPoint, board):
                 counter -= 1
             else:
                 counter += 1
-            if (counter < 1) or (counter > 8): # This is redundant
+            if (startInt + counter < 1) or (startInt + counter > 8):
                 print("IT@S BROKENNN")
+                print(f"This is the current broken counter {counter}")
                 break
             square = board[f"{startChar}{startInt+counter}"]
+            if len(square) == 2:
+                if square[1] == color:
+                    print("Cannot move into your own color")
+                    return False
+                else:
+                    possibleMoves.append(f"{startChar}{startInt+counter}")
+                    break
+            possibleMoves.append(f"{startChar}{startInt+counter}")
+            
+    elif startInt == endInt:
+        for i in range(0, abs(differenceChar)):
+            if differenceChar < 0:
+                counter -= 1
+            else:
+                counter += 1
+            square = board[f"{lateral.__getitem__(startIndex+counter)}{startInt}"]
+            if len(square) == 2:
+                if square[1] == color:
+                    print("Cannot move into your own color")
+                    return False
+                else:
+                    possibleMoves.append(f"{lateral.__getitem__(startIndex+counter)}{startInt}")
+                    break
+            possibleMoves.append(f"{lateral.__getitem__(startIndex+counter)}{startInt}")
+    else:
+        print("Unable to move none horizontally for a Rook")
+        return False
+        
+    return possibleMoves
+            
+            
+        
     
 
 def rookMovement(startPoint, endPoint, board):
-    return horizontalMovement(startPoint, endPoint, board)
+    possibleMoves = horizontalMovement(startPoint, endPoint, board)
+    if possibleMoves == False:
+        return False
+    if endPoint in possibleMoves:
+        boardUpdate([startPoint, endPoint])
+        return 
+    else:
+        return False
 
 def userMove(board, color):
     # I need to figure out which notation to use to move a piece. I think a coord H4, A4?, 
@@ -331,7 +380,9 @@ def userMove(board, color):
         elif piece == pieces[3]:
             if rookMovement(new_positions[0], new_positions[1], board) == False:
                 print("Rook is unable to move to that position")    
-                continue        
+                continue  
+            else:
+                return      
         elif piece == pieces[4]:
             print("Selected square is a Queen")
         elif piece == pieces[5]:
