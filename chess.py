@@ -1,10 +1,15 @@
 import sys
+import unicodedata
 # Would it be better to store the different colored squares as two different arrays/lists?
 
 # Dictionary for h4 = [7, 3]???
 # Set up the Dictionary with a nested for loop assigning letters from a string to values
 lateral = "ABCDEFGH"
-pieces = ["p", "kn", "b", "r", "q", "k"]
+# pieces = ["p", "kn", "b", "r", "q", "k"]
+whitePieces = ['\u2659', '\u2658', '\u2657', '\u2656', '\u2655', '\u2654']
+blackPieces = ['\u265F', '\u265E', '\u265D', '\u265C', '\u265B', '\u265A']
+
+white_to_black = {w: b for w, b in zip(whitePieces, blackPieces)}
 
 def boardSetUp():
     board = {}
@@ -15,24 +20,24 @@ def boardSetUp():
 
     for i in [(2, "white"), (7, "black")]:
         for letter in lateral:
-            board[f"{letter}{i[0]}"] = [pieces[0], i[1]]
+            board[f"{letter}{i[0]}"] = [whitePieces[0], i[1]]
             # print(board[f"{letter}{i[0]}"])
 
     for side in [[1, "white"], [8, "black"]]:
-        for first in [[lateral[0], lateral[7], pieces[3]], 
-                    [lateral[1], lateral[6], pieces[1]], 
-                    [lateral[2], lateral[5], pieces[2]]]:
+        for first in [[lateral[0], lateral[7], whitePieces[3]], 
+                    [lateral[1], lateral[6], whitePieces[1]], 
+                    [lateral[2], lateral[5], whitePieces[2]]]:
             # print(f"Position: {side[0]}\nColor: {side[1]}\nAt Positions: {first[0]}, {first[1]}\nPiece: {first[2]}")
             board[f"{first[0]}{side[0]}"] = [first[2], side[1]]
             board[f"{first[1]}{side[0]}"] = [first[2], side[1]]
             
-    board[f"D1"] = [pieces[4], "white"]
-    board[f"E1"] = [pieces[5], "white"]
-    board[f"D8"] = [pieces[4], "black"]
-    board[f"E8"] = [pieces[5], "black"]
+    board[f"D1"] = [whitePieces[4], "white"]
+    board[f"E1"] = [whitePieces[5], "white"]
+    board[f"D8"] = [whitePieces[4], "black"]
+    board[f"E8"] = [whitePieces[5], "black"]
 
-    board["B3"] = ["p", "black"] # for cheking pawn attacking
-    board["A7"] = ["p", "white"] # for cheking pawn attacking
+    # board["B3"] = ["p", "black"] # for cheking pawn attacking
+    # board["A7"] = ["p", "white"] # for cheking pawn attacking
 
     for i in reversed(range(8)):
         print("{:>2}".format(f"{i+1}|"), end="")
@@ -42,9 +47,10 @@ def boardSetUp():
                 print("{:>4}".format(f"{square}"), end="")
             else:
                 if square[1] == "white":
-                    print("{:>4}".format(f"{square[0].upper()}"), end="")
-                else:
                     print("{:>4}".format(f"{square[0]}"), end="")
+                else:
+                    print("{:>4}".format(f"{white_to_black.get(square[0])}"), end="")
+                    # print("{:>4}".format(f"{square[0]}"), end="")
         if i != 0:
             print(end="\n\n")
         else: 
@@ -63,7 +69,7 @@ def boardUpdate(movedPiece):
     hasWon = None
     if len(board[f"{movedPiece[1]}"]) == 2:
         print(f"You Took A {board[f"{movedPiece[0]}"][1].upper()}")
-        if board[f"{movedPiece[1]}"][0] == pieces[5]:
+        if board[f"{movedPiece[1]}"][0] == whitePieces[5]:
             print("Check Mate!")
             hasWon = board[f"{movedPiece[0]}"][1]
             
@@ -79,9 +85,10 @@ def boardUpdate(movedPiece):
                 print("{:>4}".format(f"{square}"), end="")
             else:
                 if square[1] == "white":
-                    print("{:>4}".format(f"{square[0].upper()}"), end="")
-                else:
                     print("{:>4}".format(f"{square[0]}"), end="")
+                else:
+                    print("{:>4}".format(f"{white_to_black.get(square[0])}"), end="")
+                    # print("{:>4}".format(f"{square[0]}"), end="")
         if i != 0:
             print(end="\n\n")
         else: 
@@ -121,7 +128,7 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     if endPoint[1] == "8" or endPoint[1] == "1":
         while (True):
             upgrade = input("Choose a piece to upgrade to: ki, b, r, or q\n").strip().lower()
-            if upgrade in pieces:
+            if upgrade in whitePieces:
                 upgrading = True
                 break
             else:
@@ -410,37 +417,37 @@ def userMove(board, color):
 
     
         piece = board[f"{new_positions[0]}"][0]
-        if piece == pieces[0]:
+        if piece == whitePieces[0]:
             if pawnMovement(new_positions[0], new_positions[1], board, taking) == False:
                 print("Pawn is unable to move to that position")
                 continue
             else:
                 return
-        elif piece == pieces[1]:
+        elif piece == whitePieces[1]:
             if knightMovement(new_positions[0], new_positions[1], board) == False:
                 print("Knight is unable to move to that position")
                 continue
             else:
                 return
-        elif piece == pieces[2]:
+        elif piece == whitePieces[2]:
             if bishopMovement(new_positions[0], new_positions[1], board) == False:
                 print("Bishop is unable to move to that position")
                 continue
             else:
                 return
-        elif piece == pieces[3]:
+        elif piece == whitePieces[3]:
             if rookMovement(new_positions[0], new_positions[1], board) == False:
                 print("Rook is unable to move to that position")    
                 continue  
             else:
                 return      
-        elif piece == pieces[4]:
+        elif piece == whitePieces[4]:
            if queenMovement(new_positions[0], new_positions[1], board) == False:
                 print("Queen is unable to move to that position")    
                 continue
            else:
                return
-        elif piece == pieces[5]:
+        elif piece == whitePieces[5]:
             if kingMovement(new_positions[0], new_positions[1], board) == False:
                 print("Queen is unable to move to that position")    
                 continue
