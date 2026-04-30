@@ -59,6 +59,8 @@ def boardSetUp():
     return board
 
 def boardUpdate(movedPiece):
+    if len(board[f"{movedPiece[1]}"]) == 2:
+        print(f"You Took A {board[f"{movedPiece[0]}"][1].upper()}")
     board[f"{movedPiece[1]}"] = board[f"{movedPiece[0]}"]
     board[f"{movedPiece[0]}"] = []
     print("Updated Board!!")
@@ -107,7 +109,6 @@ def pawnMovement(startPoint, endPoint, board, attacking):
     if verticalDistance > 2 or verticalDistance < 1:
         return False
     
-    print(f"End point is {endPoint[1]}")
     if endPoint[1] == "8" or endPoint[1] == "1":
         while (True):
             upgrade = input("Choose a piece to upgrade to: ki, b, r, or q\n").strip().lower()
@@ -119,7 +120,6 @@ def pawnMovement(startPoint, endPoint, board, attacking):
                 print("Invalid Upgrade")
                 continue
     else:
-        print(f"Endpoint == 1: {endPoint[1] == 1}\nEndpoint == 8: {endPoint[1] == 8}")
         upgrading = False
         
     if attacking:
@@ -129,7 +129,6 @@ def pawnMovement(startPoint, endPoint, board, attacking):
         if upgrading:
             board[f"{startPoint}"] = [upgrade, color]
         boardUpdate([startPoint, endPoint])
-        print(f"You Took A {enemyPiece.upper()}")
         # Implement actually taking a piece and updating the board
     else:
         if startPoint[0] != endPoint[0]:
@@ -145,7 +144,61 @@ def pawnMovement(startPoint, endPoint, board, attacking):
         else:
             boardUpdate([startPoint, endPoint])
 
+def knightMovement(startPoint, endPoint, board):
+    possibleMoves = []
+    try:
+        vertical = int(startPoint[1])
+    except:
+        print("I genuinely do not understand how you've done this")
+    horizontal = lateral.index(startPoint[0])
+    
+    if vertical + 1 <= 8: # Top right
+        if vertical + 2 <= 8:
+            if horizontal + 1 < len(lateral): # Vertical High
+                possibleMoves.append(f"{lateral.__getitem__(horizontal+1)}{vertical+2}")
+        if horizontal + 2 < len(lateral): # Horizontal High
+            possibleMoves.append(f"{lateral.__getitem__(horizontal+2)}{vertical+1}")
+    if vertical - 1 > 0:
+        if vertical - 2 > 0: # Bottom right
+            if horizontal + 1 < len(lateral): # Vertical Low
+                possibleMoves.append(f"{lateral.__getitem__(horizontal+1)}{vertical-2}")
+        if horizontal + 2 < len(lateral): # Horizontal Low
+            possibleMoves.append(f"{lateral.__getitem__(horizontal+2)}{vertical-1}")
+    if horizontal - 1 >= 0: # Top Left
+        if horizontal - 2 >= 0:
+            if vertical + 1 <= 8: # Vertical High
+                possibleMoves.append(f"{lateral.__getitem__(horizontal-2)}{vertical+1}")
+            if vertical - 1 > 0:
+                possibleMoves.append(f"{lateral.__getitem__(horizontal-2)}{vertical-1}")
+        if vertical + 2 <= 8:
+                possibleMoves.append(f"{lateral.__getitem__(horizontal-1)}{vertical+2}")
+        if vertical - 2 > 0:
+                possibleMoves.append(f"{lateral.__getitem__(horizontal-1)}{vertical-2}")
+    
+    print(f"The possible moves for a knight to take from the {startPoint} are:")
+    for i in range(len(possibleMoves)):
+        print(possibleMoves[i])
+    
+    if endPoint in possibleMoves:
+        boardUpdate([startPoint, endPoint])
+        return
+    else: 
+        print("Invalid Knight Move")
+        return False
+                     
 
+def movement(startPoint, endPoint, board):
+    piece = board[f"{startPoint}"]
+    color = piece[1]
+
+    index = lateral.find(startPoint[0]) # Will get the position of the horizontal
+    enemyIndex = lateral.find(endPoint[0])
+
+    if color == "white":
+        verticalDistance = int(endPoint[1]) - int(startPoint[1])
+    else:
+        verticalDistance = int(startPoint[1]) - int(endPoint[1])
+    
 
 def userMove(board, color):
     # I need to figure out which notation to use to move a piece. I think a coord H4, A4?, 
@@ -198,6 +251,11 @@ def userMove(board, color):
                 return
         elif piece == pieces[1]:
             print("Selected square is a Knight")
+            if knightMovement(new_positions[0], new_positions[1], board) == False:
+                print("Knight is unable to move to that position")
+                continue
+            else:
+                return
         elif piece == pieces[2]:
             print("Selected square is a Bishop")
         elif piece == pieces[3]:
