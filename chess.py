@@ -302,7 +302,34 @@ def horizontalMovement(startPoint, endPoint, board):
         
     return possibleMoves
             
-            
+def queenMovement(startPoint, endPoint, board):
+    startChar = startPoint[0]
+    startIndex = lateral.index(startChar)
+    endChar = endPoint[0]
+    endIndex = lateral.index(endChar)
+    startInt = int(startPoint[1])
+    endInt = int(endPoint[1])
+    
+    if (startInt == endInt) or (startChar == endChar):
+        possibleMoves = horizontalMovement(startPoint, endPoint, board)
+    else:
+        possibleMoves = diagonalMovement(startPoint, endPoint, board)
+    # possibleHorizontalMoves = horizontalMovement(startPoint, endPoint, board)
+    # possibleDiagonalMoves = diagonalMovement(startPoint, endPoint, board)
+    # if (possibleHorizontalMoves == False) or (possibleHorizontalMoves == False):
+    #     return False
+    if possibleMoves == False:
+        return False
+    
+    for move in possibleMoves:
+        print(move)
+    
+    if endPoint in possibleMoves:
+        boardUpdate([startPoint, endPoint])
+        return
+    else:
+        print("Not a valid Queen move")
+        return False  
         
     
 
@@ -384,7 +411,11 @@ def userMove(board, color):
             else:
                 return      
         elif piece == pieces[4]:
-            print("Selected square is a Queen")
+           if queenMovement(new_positions[0], new_positions[1], board) == False:
+                print("Queen is unable to move to that position")    
+                continue
+           else:
+               return
         elif piece == pieces[5]:
             print("Selected square is a King")
         else:
