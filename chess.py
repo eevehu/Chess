@@ -190,8 +190,8 @@ def knightMovement(startPoint, endPoint, board):
     else: 
         print("Invalid Knight Move")
         return False
-                     
-def bishopMovement(startPoint, endPoint, board):
+     
+def diagonalMovement(startPoint, endPoint, board):
     possibleMoves = []
     piece = board[f"{startPoint[0]}{startPoint[1]}"]
     color = piece[1]
@@ -233,16 +233,15 @@ def bishopMovement(startPoint, endPoint, board):
                 possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
                 break
         possibleMoves.append(f"{lateral[startingLateral]}{int(startPoint[1])+incremental}")
-    print(f"The possible moves for the current bishop are {possibleMoves}")
-    
-    for move in possibleMoves:
-        print(move)
     if endPoint in possibleMoves:
         boardUpdate([startPoint, endPoint])
         return
     else:
         return False
-        # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):
+        # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):    
+                     
+def bishopMovement(startPoint, endPoint, board):
+    return diagonalMovement(startPoint, endPoint, board)
 
 def rookMovement(startPoint, endPoint, board):
     print("This is the rook movement")
