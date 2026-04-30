@@ -331,6 +331,21 @@ def queenMovement(startPoint, endPoint, board):
         print("Not a valid Queen move")
         return False  
         
+def kingMovement(startPoint, endPoint, board):
+    startChar = startPoint[0]
+    startIndex = lateral.index(startChar)
+    endChar = endPoint[0]
+    endIndex = lateral.index(endChar)
+    startInt = int(startPoint[1])
+    endInt = int(endPoint[1])
+    
+    differenceChar = endIndex - startIndex
+    differenceInt = endInt - startInt
+    
+    if (abs(differenceInt) > 1) or (abs(differenceChar) > 1):
+        return False
+    
+    boardUpdate([startPoint, endPoint])
     
 
 def rookMovement(startPoint, endPoint, board):
@@ -417,7 +432,11 @@ def userMove(board, color):
            else:
                return
         elif piece == pieces[5]:
-            print("Selected square is a King")
+            if kingMovement(new_positions[0], new_positions[1], board) == False:
+                print("Queen is unable to move to that position")    
+                continue
+            else:
+               return
         else:
             print("Somehow the selected piece is.... Not a piece? Weird, huh")
 
