@@ -135,6 +135,9 @@ def pawnMovement(startPoint, endPoint, board, attacking):
             return False
         if verticalDistance == 2:
             if (startPoint[1] == "2") and (color == "white") or (startPoint[1] == "7") and (color == "black"):
+                if len(board[f"{startPoint[0]}{startPoint[1]+1}"]) == 2:
+                    print("Cannot jump past piece")
+                    return False
                 if upgrading:
                     board[f"{startPoint}"] = [upgrade, color]
                 boardUpdate([startPoint, endPoint])
@@ -186,6 +189,35 @@ def knightMovement(startPoint, endPoint, board):
         print("Invalid Knight Move")
         return False
                      
+def bishopMovement(startPoint, endPoint, board):
+    possibleMoves = []
+    piece = board[f"{startPoint[0]}{startPoint[1]}"]
+    color = piece[1]
+    
+    # Create a for loop with the distances from out start to our end
+    startingLateral = lateral.index(startPoint[0])
+    isUp = startingLateral < lateral.index(endPoint[0])
+    
+    for i in range(int(startPoint[1]), int(endPoint[1])):
+        # would be by saying plus or minus from the start point each time throug the loop
+        square = board[f"{lateral[startingLateral]}{i}"] 
+        print(f"Checking out {square}")
+        if len(square) == 2:
+            if square[1] == color:
+                print("Cannot move through your own piece")
+                return False
+            else:
+                possibleMoves.append(square[0])
+                
+        if isUp:
+            possibleMoves.append(f"{lateral[startingLateral]}{i}")
+            startingLateral += 1
+        else:
+            
+        # for j in range(lateral.index(startPoint[0]), lateral.index(endPoint[0])):
+            
+            
+            
 
 def movement(startPoint, endPoint, board):
     piece = board[f"{startPoint}"]
